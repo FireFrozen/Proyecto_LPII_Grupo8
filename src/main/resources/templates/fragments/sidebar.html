@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<div th:fragment="sidebar">
+
+    <ul class="navbar-nav bg-dark sidebar sidebar-dark text-white px-3 min-vh-100">
+
+        <li class="nav-item fw-bold mb-4">
+            <a class="nav-link" th:href="@{/home}">
+                Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/gestionrol/lista}">
+                Roles
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/gestionusuario/lista}">
+                Usuarios
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/gestioncategoria/lista}">
+                Categoría de Platos
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+</html>

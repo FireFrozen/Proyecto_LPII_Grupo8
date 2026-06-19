@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="navbar"
+     class="navbar navbar-expand navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="#">
+            Restaurante
+        </a>
+
+        <div class="ms-auto">
+
+            <span class="text-white me-3"
+                  th:text="${session.usuario.nombres + ' ' + session.usuario.apellidos}">
+            </span>
+
+            <a th:href="@{/logout}"
+               class="btn btn-danger btn-sm">
+                Salir
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+</html>

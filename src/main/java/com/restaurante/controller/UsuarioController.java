@@ -6,22 +6,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.restaurante.service.RolService;
+import com.restaurante.service.UsuarioService;
 
 @Controller
-@RequestMapping("/gestionrol")
-public class RolController {
+@RequestMapping("/gestionusuario")
+public class UsuarioController {
 	
 	@Autowired
-	private RolService rolService;
+	private UsuarioService usuarioService;
 	
 
 	@GetMapping("/lista")
-	public String listandoRoles(Model modelito){
+	public String listandoUsuarios(Model modelito){
 		
-		modelito.addAttribute("mensaje", "Bienvenido al modulo de Roles");
-		modelito.addAttribute("roles", rolService.listar());
-		return "rol/listaRoles";
+		modelito.addAttribute("mensaje", "Bienvenido al modulo de Usuarios");
+		modelito.addAttribute("usuarios", usuarioService.listar());
+		return "usuario/listaUsuarios";
 	}
 	
 }

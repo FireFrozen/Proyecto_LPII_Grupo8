@@ -17,7 +17,7 @@ public class CategoriaPlatoController {
 	
 
 	@GetMapping("/lista")
-	public String listandoCiudades(Model modelito){
+	public String listandoCategorias(Model modelito){
 		
 		modelito.addAttribute("mensaje", "Bienvenido al modulo de Categorias de Platos");
 		modelito.addAttribute("categorias", CPService.listar());
