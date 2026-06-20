@@ -13,7 +13,7 @@ public class Mesa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_mesa", nullable = false)
-    private int idMesa;
+    private Integer idMesa;
 
     @Column(name = "numero_mesa", nullable = false)
     private int numeroMesa;
@@ -34,11 +34,11 @@ public class Mesa {
     public Mesa() {
     }
 
-	public int getIdMesa() {
+	public Integer getIdMesa() {
 		return idMesa;
 	}
 
-	public void setIdMesa(int idMesa) {
+	public void setIdMesa(Integer idMesa) {
 		this.idMesa = idMesa;
 	}
 

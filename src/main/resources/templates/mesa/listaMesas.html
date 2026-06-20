@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Gestión de Mesas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+	<div class="card shadow">
+		<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+			<h3 class="mb-0">Listado de Mesas</h3>
+			<button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#modalMesa"
+					onclick="limpiarModal()">+ Registrar Nueva Mesa</button>
+		</div>
+		<div class="card-body">
+			<div class="alert alert-info" role="alert">
+				<span th:text="${mensaje}"></span>
+			</div>
+			<table class="table table-bordered table-hover table-striped">
+				<thead class="table-dark">
+					<tr>
+						<th>ID</th>
+						<th>N° Mesa</th>
+						<th>Capacidad</th>
+						<th>Estado Mesa</th>
+						<th>Estado Registro</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="m:${mesas}">
+						<td th:text="${m.idMesa}"></td>
+						<td th:text="${m.numeroMesa}"></td>
+						<td th:text="${m.capacidad}"></td>
+						<td>
+							<span class="badge bg-info text-white" th:text="${m.estadoMesa}"></span>
+						</td>
+						<td>
+							<span class="badge bg-success" th:text="${m.estadoRegistro}"></span>
+						</td>
+						<td>
+							<button class="btn btn-warning btn-sm" title="Editar"
+									th:onclick="'editarMesa(' + ${m.idMesa} + ')'">&#9998;</button>
+							<a class="btn btn-danger btn-sm" title="Eliminar"
+							   th:href="@{/gestionmesa/eliminar/{id}(id=${m.idMesa})}"
+							   onclick="return confirm('¿Eliminar esta mesa?')">&#128465;</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-end">
+				<strong>
+					Total de Mesas:
+					<span th:text="${#lists.size(mesas)}"></span>
+				</strong>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalMesa" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title" id="modalTitulo">Nueva Mesa</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+			<form th:action="@{/gestionmesa/guardar}" method="post">
+				<div class="modal-body">
+					<input type="hidden" name="idMesa" id="idMesa">
+					<div class="mb-3">
+						<label class="form-label">N° Mesa</label>
+						<input type="number" class="form-control" name="numeroMesa" id="numeroMesa" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Capacidad</label>
+						<input type="number" class="form-control" name="capacidad" id="capacidad" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Estado Mesa</label>
+						<select class="form-select" name="estadoMesa" id="estadoMesa" required>
+							<option value="">-- Seleccione --</option>
+							<option value="DISPONIBLE">Disponible</option>
+							<option value="OCUPADA">Ocupada</option>
+							<option value="RESERVADA">Reservada</option>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+function limpiarModal(){
+	$('#idMesa').val('');
+	$('#numeroMesa').val('');
+	$('#capacidad').val('');
+	$('#estadoMesa').val('');
+	$('#modalTitulo').text('Nueva Mesa');
+}
+
+function editarMesa(id){
+	$.get('/gestionmesa/cargar/' + id, function(data){
+		$('#idMesa').val(data.idMesa);
+		$('#numeroMesa').val(data.numeroMesa);
+		$('#capacidad').val(data.capacidad);
+		$('#estadoMesa').val(data.estadoMesa);
+		$('#modalTitulo').text('Editar Mesa');
+		$('#modalMesa').modal('show');
+	});
+}
+</script>
+</body>
+</html>
