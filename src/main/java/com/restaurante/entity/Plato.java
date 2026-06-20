@@ -14,7 +14,7 @@ public class Plato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_plato", nullable = false)
-    private int idPlato;
+    private Integer idPlato;
 
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
@@ -23,10 +23,10 @@ public class Plato {
     private String descripcion;
 
     @Column(name = "precio", nullable = false)
-    private double precio;
+    private Double precio;
 
     @Column(name = "stock", nullable = false)
-    private int stock;
+    private Integer stock;
 
     @Column(name = "estado_registro", nullable = false, length = 10)
     private String estadoRegistro;
@@ -43,11 +43,11 @@ public class Plato {
     public Plato() {
     }
 
-	public int getIdPlato() {
+	public Integer getIdPlato() {
 		return idPlato;
 	}
 
-	public void setIdPlato(int idPlato) {
+	public void setIdPlato(Integer idPlato) {
 		this.idPlato = idPlato;
 	}
 
@@ -67,19 +67,19 @@ public class Plato {
 		this.descripcion = descripcion;
 	}
 
-	public double getPrecio() {
+	public Double getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(double precio) {
+	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
 
-	public int getStock() {
+	public Integer getStock() {
 		return stock;
 	}
 
-	public void setStock(int stock) {
+	public void setStock(Integer stock) {
 		this.stock = stock;
 	}
 
