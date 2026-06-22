@@ -9,6 +9,16 @@
 </head>
 <body>
 
+<div class="d-flex">
+
+	<div th:replace="~{fragments/sidebar :: sidebar}">
+	</div>
+
+	<div class="flex-grow-1">
+
+		<div th:replace="~{fragments/navbar :: navbar}">
+		</div>
+
 <div class="container mt-4">
 
 	<div class="card shadow">
@@ -74,6 +84,10 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+	</div>
+
 </div>
 </body>
 </html>

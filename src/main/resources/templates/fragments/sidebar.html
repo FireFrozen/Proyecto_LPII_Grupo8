@@ -7,7 +7,7 @@
     <ul class="navbar-nav bg-dark sidebar sidebar-dark text-white px-3 min-vh-100">
 
         <li class="nav-item fw-bold mb-4">
-            <a class="nav-link" th:href="@{/home}">
+            <a class="nav-link" th:href="@{/}">
                 Dashboard
             </a>
         </li>
@@ -25,22 +25,28 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/gestionmesa/lista}">
-                Mesas
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/gestionplato/lista}">
-                Platos
-            </a>
-        </li>
-
-        <li class="nav-item">
             <a class="nav-link" th:href="@{/gestioncategoria/lista}">
                 Categoría de Platos
             </a>
         </li>
+		
+		<li class="nav-item">
+            <a class="nav-link" th:href="@{/gestionplato/lista}">
+                Platos
+            </a>
+        </li>
+		
+		<li class="nav-item">
+	        <a class="nav-link" th:href="@{/gestionmesa/lista}">
+	            Mesas
+	        </a>
+	    </li>
+		
+		<li class="nav-item">
+           <a class="nav-link" th:href="@{/gestioncliente/lista}">
+               Clientes
+           </a>
+       </li>   	   
 
     </ul>
 
