@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Restaurante | Registrar Pedido</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}">
+    </div>
+
+    <div class="flex-grow-1">
+
+        <div th:replace="~{fragments/navbar :: navbar}">
+        </div>
+
+        <div class="container-fluid p-4">
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Registro de Pedido</h4>
+                </div>
+            </div>
+
+            <form th:action="@{/pedido/guardar}" method="post" id="formPedido">
+            <input type="hidden" name="usuario.idUsuario" value="1">
+
+                <div class="row">
+
+                    <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+                    <div class="col-md-5">
+
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-secondary text-white">
+                                <strong>Datos del Pedido</strong>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Cliente</label>
+                                    <select class="form-select" name="cliente.idCliente" required>
+                                        <option value="">-- Seleccione Cliente --</option>
+                                        <option th:each="c:${clientes}"
+                                                th:value="${c.idCliente}"
+                                                th:text="${c.nombres + ' ' + c.apellidos}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Mesa</label>
+                                    <select class="form-select" name="mesa.idMesa" required>
+                                        <option value="">-- Seleccione Mesa --</option>
+                                        <option th:each="m:${mesas}"
+                                                th:value="${m.idMesa}"
+                                                th:text="'Mesa N° ' + ${m.numeroMesa} + ' (Cap. ' + ${m.capacidad} + ')'"></option>
+                                    </select>
+                                </div>
+
+                                <hr>
+
+                                <h6 class="text-secondary">Agregar Platos</h6>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Plato</label>
+                                    <select class="form-select" id="platoSelect">
+                                        <option value="">-- Seleccione Plato --</option>
+                                        <option th:each="p:${platos}"
+                                                th:value="${p.idPlato}"
+                                                th:text="${p.nombre}"
+                                                th:attr="data-precio=${p.precio}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Cantidad</label>
+                                    <input type="number" class="form-control" id="cantidadInput" value="1" min="1">
+                                </div>
+
+                                <button type="button" class="btn btn-primary w-100"
+                                        onclick="agregarPlato()">
+                                    + Agregar al Pedido
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- COLUMNA DERECHA: COMANDA / CARRITO -->
+                    <div class="col-md-7">
+
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-secondary text-white">
+                                <strong>Comanda - Detalle del Pedido</strong>
+                            </div>
+                            <div class="card-body">
+
+                                <div id="detallesContainer"></div>
+
+                                <table class="table table-bordered table-hover table-striped mb-3">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Plato</th>
+                                            <th>Precio</th>
+                                            <th>Cant.</th>
+                                            <th>Subtotal</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaDetalle">
+                                    </tbody>
+                                </table>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">
+                                        Total: S/ <span id="totalGeneral">0.00</span>
+                                    </h4>
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        &#10003; Confirmar Registro de Pedido
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+let contador = 0;
+let total = 0;
+
+function agregarPlato(){
+    const select = document.getElementById('platoSelect');
+    const cantidadInput = document.getElementById('cantidadInput');
+    const option = select.options[select.selectedIndex];
+
+    if(!option.value){
+        alert('Seleccione un plato');
+        return;
+    }
+
+    const idPlato = option.value;
+    const nombre = option.text;
+    const precio = parseFloat(option.getAttribute('data-precio'));
+    const cantidad = parseInt(cantidadInput.value);
+
+    if(cantidad < 1){
+        alert('Ingrese una cantidad válida');
+        return;
+    }
+
+    const subtotal = precio * cantidad;
+    const idx = contador++;
+
+    const fila = '<tr id="fila-' + idx + '">'
+        + '<td>' + nombre + '</td>'
+        + '<td>S/ ' + precio.toFixed(2) + '</td>'
+        + '<td>' + cantidad + '</td>'
+        + '<td>S/ ' + subtotal.toFixed(2) + '</td>'
+        + '<td>'
+        +   '<button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(' + idx + ')">&#128465;</button>'
+        + '</td>'
+        + '<input type="hidden" name="listaDetalles[' + idx + '].plato.idPlato" value="' + idPlato + '">'
+        + '<input type="hidden" name="listaDetalles[' + idx + '].cantidad" value="' + cantidad + '">'
+        + '<input type="hidden" name="listaDetalles[' + idx + '].precioUnitario" value="' + precio + '">'
+        + '</tr>';
+
+    $('#tablaDetalle').append(fila);
+    total += subtotal;
+    $('#totalGeneral').text(total.toFixed(2));
+
+    select.selectedIndex = 0;
+    cantidadInput.value = 1;
+}
+
+function eliminarFila(idx){
+    const fila = document.getElementById('fila-' + idx);
+    const celdas = fila.querySelectorAll('td');
+    const subtotalTexto = celdas[3].textContent.replace('S/ ', '');
+    const subtotal = parseFloat(subtotalTexto);
+    total -= subtotal;
+    fila.remove();
+    $('#totalGeneral').text(total.toFixed(2));
+}
+</script>
+
+</body>
+</html>
