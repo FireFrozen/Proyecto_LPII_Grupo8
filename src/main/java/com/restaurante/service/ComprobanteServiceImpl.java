@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.restaurante.entity.Comprobante;
 import com.restaurante.entity.DetallePedido;
+import com.restaurante.entity.Mesa;
 import com.restaurante.entity.Pedido;
 import com.restaurante.entity.Plato;
 import com.restaurante.entity.Usuario;
 import com.restaurante.repository.ComprobanteRepository;
+import com.restaurante.repository.MesaRepository;
 import com.restaurante.repository.PedidoRepository;
 import com.restaurante.repository.PlatoRepository;
 import com.restaurante.repository.UsuarioRepository;
@@ -33,6 +35,9 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 
 	@Autowired
 	private PlatoRepository platoRepository;
+
+	@Autowired
+	private MesaRepository mesaRepository;
 
 	@Override
 	public List<Comprobante> listar() {
@@ -165,5 +170,11 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 
 		pedido.setEstadoPedido("PAGADO");
 		pedidoRepository.save(pedido);
+
+		Mesa mesa = pedido.getMesa();
+		if (mesa != null) {
+			mesa.setEstadoMesa("DISPONIBLE");
+			mesaRepository.save(mesa);
+		}
 	}
 }
