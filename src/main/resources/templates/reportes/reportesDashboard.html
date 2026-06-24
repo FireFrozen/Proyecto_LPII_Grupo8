@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurante | Reportes y Métricas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="flex-grow-1">
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <div class="container-fluid mt-4 px-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0"><i class="bi bi-bar-chart-line-fill me-2"></i>Panel de Métrica y Reportes</h3>
+                </div>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="card border-0 bg-primary text-white shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-white-50 small mb-1">Ventas Totales (Comprobantes)</h6>
+                                <h2 class="mb-0 fw-bold" th:text="${'S/ ' + #numbers.formatDecimal(metricas.ventasTotales, 1, 2)}">S/ 0.00</h2>
+                            </div>
+                            <div class="fs-1 text-white-50"><i class="bi bi-currency-exchange"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 bg-success text-white shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-white-50 small mb-1">Plato Más Vendido</h6>
+                                <h3 class="mb-0 fw-bold" th:text="${metricas.platoNombre}">Plato</h3>
+                                <small class="text-white-50" th:text="${metricas.platoCantidad + ' unidades vendidas'}">0 u.</small>
+                            </div>
+                            <div class="fs-1 text-white-50"><i class="bi bi-egg-fried"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 bg-warning text-dark shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase text-dark-50 small mb-1">Mesa más Solicitada</h6>
+                                <h2 class="mb-0 fw-bold" th:text="${'Mesa N° ' + metricas.mesaNumero}">Mesa 0</h2>
+                                <small class="text-dark-50" th:text="${metricas.mesaContador + ' pedidos atendidos'}">0 pedidos</small>
+                            </div>
+                            <div class="fs-1 text-dark-50"><i class="bi bi-table"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center py-4">
+                            <p class="text-muted mb-0"><i class="bi bi-info-circle me-1"></i> Las métricas mostradas se calculan en tiempo real basándose en el flujo de pedidos y facturación actual del restaurante.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
