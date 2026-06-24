@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-
 <div th:fragment="sidebar">
 
     <ul class="navbar-nav bg-dark sidebar sidebar-dark text-white px-3 min-vh-100">
@@ -30,24 +29,29 @@
             </a>
         </li>
 		
-		<li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" th:href="@{/gestionplato/lista}">
                 Platos
             </a>
         </li>
 		
-		<li class="nav-item">
-	        <a class="nav-link" th:href="@{/gestionmesa/lista}">
-	            Mesas
-	        </a>
-	    </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/gestionmesa/lista}">
+                Mesas
+            </a>
+        </li>
 		
-		<li class="nav-item">
-           <a class="nav-link" th:href="@{/gestioncliente/lista}">
-               Clientes
-           </a>
-       </li>   	   
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/gestioncliente/lista}">
+                Clientes
+            </a>
+        </li>   	   
 
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/reportes/dashboard}">
+                <i class="bi bi-bar-chart-line me-2"></i> Reportes
+            </a>
+        </li>
     </ul>
 
 </div>
