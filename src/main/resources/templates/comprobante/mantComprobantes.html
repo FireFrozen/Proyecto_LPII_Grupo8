@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Mantenimiento de Comprobantes</title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+
+<div class="d-flex">
+
+	<div th:replace="~{fragments/sidebar :: sidebar}">
+	</div>
+
+	<div class="flex-grow-1">
+
+		<div th:replace="~{fragments/navbar :: navbar}">
+		</div>
+
+		<div class="container-fluid mt-4">
+
+			<div class="card shadow">
+
+				<div class="card-header bg-primary text-white">
+					<h3 class="mb-0">Mantenimiento de Comprobantes</h3>
+				</div>
+
+				<div class="card-body">
+
+					<div class="alert alert-info">
+						<span th:text="${mensaje}"></span>
+					</div>
+
+					<button id="btnNuevo" type="button" class="btn btn-success mb-3"
+							data-bs-toggle="modal" data-bs-target="#modalComprobante">
+						<i class="bi bi-plus-circle"></i> Nuevo Comprobante
+					</button>
+
+					<div id="mensajeExito" th:if="${mensajeExito}"
+						 class="alert alert-success alert-dismissible fade show">
+						<span th:text="${mensajeExito}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+
+					<div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show">
+						<span th:text="${mensajeError}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+
+					<div class="table-responsive">
+						<table id="tablaComprobante" class="table table-bordered table-hover table-striped">
+							<thead class="table-dark">
+								<tr>
+									<th>ID</th>
+									<th>Tipo</th>
+									<th>Numero</th>
+									<th>Fecha</th>
+									<th>Subtotal</th>
+									<th>IGV</th>
+									<th>Total</th>
+									<th>Estado</th>
+									<th>Pedido</th>
+									<th>Cajero</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="c : ${comprobantes}">
+									<td th:text="${c.idComprobante}"></td>
+									<td th:text="${c.tipo}"></td>
+									<td th:text="${c.numero}"></td>
+									<td th:text="${#temporals.format(c.fechaEmision, 'dd/MM/yyyy HH:mm')}"></td>
+									<td th:text="'S/ ' + ${#numbers.formatDecimal(c.subtotal, 1, 2)}"></td>
+									<td th:text="'S/ ' + ${#numbers.formatDecimal(c.igv, 1, 2)}"></td>
+									<td th:text="'S/ ' + ${#numbers.formatDecimal(c.total, 1, 2)}"></td>
+									<td>
+										<span class="badge"
+											  th:classappend="${c.estadoComprobante == 'EMITIDO'} ? ' bg-success' : ' bg-danger'"
+											  th:text="${c.estadoComprobante}"></span>
+									</td>
+									<td th:text="'Pedido #' + ${c.pedido.idPedido}"></td>
+									<td th:text="${c.usuario.nombres + ' ' + c.usuario.apellidos}"></td>
+									<td class="text-nowrap">
+										<button type="button" class="btn btn-warning btn-sm btnEditar"
+												th:data-id="${c.idComprobante}" title="Editar comprobante">
+											<i class="bi bi-pencil-square"></i>
+										</button>
+
+										<button type="button" class="btn btn-danger btn-sm btnAnular"
+												th:data-id="${c.idComprobante}"
+												th:disabled="${c.estadoComprobante == 'ANULADO'}"
+												title="Anular comprobante">
+											<i class="bi bi-x-circle"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="modal fade" id="modalComprobante" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+			<form id="frmComprobante" th:action="@{/gestioncomprobante/registrar}" method="post">
+				<input type="hidden" id="idComprobante" name="idComprobante" value="0">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="tituloModal">Registrar Comprobante</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="row">
+
+						<div class="col-md-6 mb-3">
+							<label for="tipo" class="form-label">Tipo</label>
+							<select id="tipo" name="tipo" class="form-select" required>
+								<option value="BOLETA">BOLETA</option>
+								<option value="FACTURA">FACTURA</option>
+							</select>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="numero" class="form-label">Numero</label>
+							<input id="numero" name="numero" type="text" maxlength="20"
+								   class="form-control" required>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="fechaEmision" class="form-label">Fecha de emision</label>
+							<input id="fechaEmision" name="fechaEmision" type="datetime-local"
+								   class="form-control" required>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="estadoComprobante" class="form-label">Estado</label>
+							<select id="estadoComprobante" name="estadoComprobante" class="form-select" required>
+								<option value="EMITIDO">EMITIDO</option>
+								<option value="ANULADO">ANULADO</option>
+							</select>
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label for="subtotal" class="form-label">Subtotal</label>
+							<input id="subtotal" name="subtotal" type="number" step="0.01"
+								   class="form-control" readonly>
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label for="igv" class="form-label">IGV</label>
+							<input id="igv" name="igv" type="number" step="0.01"
+								   class="form-control" readonly>
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<label for="total" class="form-label">Total</label>
+							<input id="total" name="total" type="number" step="0.01"
+								   class="form-control" readonly>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="pedido" class="form-label">Pedido</label>
+							<select id="pedido" name="pedido.idPedido" class="form-select" required>
+								<option value="">-- Seleccione Pedido --</option>
+								<option th:each="p : ${pedidosTodos}"
+										th:value="${p.idPedido}"
+										th:attr="data-total=${p.total},
+												 data-disponible=${#lists.contains(idsPedidosNoPagados, p.idPedido)}"
+										th:text="'Pedido #' + ${p.idPedido} + ' - S/ ' + ${#numbers.formatDecimal(p.total, 1, 2)}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="usuario" class="form-label">Cajero</label>
+							<select id="usuario" name="usuario.idUsuario" class="form-select" required>
+								<option value="">-- Seleccione Cajero --</option>
+								<option th:each="u : ${cajeros}"
+										th:value="${u.idUsuario}"
+										th:text="${u.nombres + ' ' + u.apellidos}">
+								</option>
+							</select>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+	function calcularImportesDelPedido() {
+		const opcion = $("#pedido option:selected");
+		const total = parseFloat(opcion.data("total"));
+
+		if (Number.isNaN(total)) {
+			$("#subtotal").val("0.00");
+			$("#igv").val("0.00");
+			$("#total").val("0.00");
+			return;
+		}
+
+		const subtotal = Math.round((total / 1.18) * 100) / 100;
+		const igv = Math.round((total - subtotal) * 100) / 100;
+
+		$("#subtotal").val(subtotal.toFixed(2));
+		$("#igv").val(igv.toFixed(2));
+		$("#total").val(total.toFixed(2));
+	}
+
+	function fechaActualParaInput() {
+		const ahora = new Date();
+		ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+		return ahora.toISOString().slice(0, 16);
+	}
+
+	function configurarPedidosParaRegistro() {
+		$("#pedido option").each(function () {
+			const disponible = String($(this).data("disponible")) === "true";
+			$(this).prop("disabled", !disponible && $(this).val() !== "");
+		});
+		$("#pedido").val("");
+	}
+
+	function habilitarTodosLosPedidos() {
+		$("#pedido option").prop("disabled", false);
+	}
+
+	$(document).ready(function () {
+		$("#tablaComprobante").DataTable({
+			language: {
+				url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json"
+			}
+		});
+	});
+
+	$("#pedido").on("change", calcularImportesDelPedido);
+
+	$("#btnNuevo").click(function () {
+		$("#tituloModal").text("Registrar Comprobante");
+		$("#frmComprobante").attr("action", "/gestioncomprobante/registrar");
+		$("#idComprobante").val(0);
+		$("#tipo").val("BOLETA");
+		$("#numero").val("");
+		$("#fechaEmision").val(fechaActualParaInput());
+		$("#subtotal").val("0.00");
+		$("#igv").val("0.00");
+		$("#total").val("0.00");
+		$("#estadoComprobante").val("EMITIDO");
+		configurarPedidosParaRegistro();
+		$("#usuario").val("");
+	});
+
+	$(document).on("click", ".btnEditar", function () {
+		const id = $(this).data("id");
+
+		$.get("/gestioncomprobante/buscar/" + id, function (data) {
+			habilitarTodosLosPedidos();
+			$("#tituloModal").text("Editar Comprobante #" + data.idComprobante);
+			$("#frmComprobante").attr("action", "/gestioncomprobante/actualizar");
+			$("#idComprobante").val(data.idComprobante);
+			$("#tipo").val(data.tipo);
+			$("#numero").val(data.numero);
+			$("#fechaEmision").val(data.fechaEmision.substring(0, 16));
+			$("#subtotal").val(Number(data.subtotal).toFixed(2));
+			$("#igv").val(Number(data.igv).toFixed(2));
+			$("#total").val(Number(data.total).toFixed(2));
+			$("#estadoComprobante").val(data.estadoComprobante);
+			$("#pedido").val(data.pedido.idPedido);
+			$("#usuario").val(data.usuario.idUsuario);
+			$("#modalComprobante").modal("show");
+		});
+	});
+
+	$(document).on("click", ".btnAnular", function () {
+		const id = $(this).data("id");
+
+		if (confirm("Desea anular este comprobante?")) {
+			window.location = "/gestioncomprobante/anular/" + id;
+		}
+	});
+
+	setTimeout(function () {
+		const mensaje = document.getElementById("mensajeExito");
+		if (mensaje) {
+			new bootstrap.Alert(mensaje).close();
+		}
+	}, 3000);
+</script>
+
+</body>
+</html>

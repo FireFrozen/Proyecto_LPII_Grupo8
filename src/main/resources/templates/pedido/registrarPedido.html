@@ -2,9 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Restaurante | Registrar Pedido</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+	<title>Restaurante | Registrar Pedido</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -27,8 +28,13 @@
                 </div>
             </div>
 
-            <form th:action="@{/pedido/guardar}" method="post" id="formPedido">
-            <input type="hidden" name="usuario.idUsuario" value="1">
+			<a class="btn btn-success mb-3" th:href="@{/gestionpedido/lista}">
+               <i class="bi bi-arrow-left-circle"></i> Volver
+            </a>
+
+            <div class="alert alert-danger" th:if="${mensajeError}" th:text="${mensajeError}"></div>
+
+            <form th:action="@{/gestionpedido/guardar}" th:object="${pedidoForm}" method="post" id="formPedido">
 
                 <div class="row">
 
@@ -43,7 +49,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Cliente</label>
-                                    <select class="form-select" name="cliente.idCliente" required>
+                                    <select class="form-select" th:field="*{idCliente}" required>
                                         <option value="">-- Seleccione Cliente --</option>
                                         <option th:each="c:${clientes}"
                                                 th:value="${c.idCliente}"
@@ -53,11 +59,21 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Mesa</label>
-                                    <select class="form-select" name="mesa.idMesa" required>
+                                    <select class="form-select" th:field="*{idMesa}" required>
                                         <option value="">-- Seleccione Mesa --</option>
                                         <option th:each="m:${mesas}"
                                                 th:value="${m.idMesa}"
-                                                th:text="'Mesa N° ' + ${m.numeroMesa} + ' (Cap. ' + ${m.capacidad} + ')'"></option>
+                                                th:text="'Mesa N° ' + ${m.numeroMesa} + ' (Capacidad: ' + ${m.capacidad} + ')'"></option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Usuario responsable</label>
+                                    <select class="form-select" th:field="*{idUsuario}" required>
+                                        <option value="">-- Seleccione Usuario --</option>
+                                        <option th:each="u:${usuarios}"
+                                                th:value="${u.idUsuario}"
+                                                th:text="${u.nombres + ' ' + u.apellidos + ' (' + u.username + ')'}"></option>
                                     </select>
                                 </div>
 
@@ -176,10 +192,9 @@ function agregarPlato(){
         + '<td>S/ ' + subtotal.toFixed(2) + '</td>'
         + '<td>'
         +   '<button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(' + idx + ')">&#128465;</button>'
+        + '<input type="hidden" data-field="idPlato" name="detalles[' + idx + '].idPlato" value="' + idPlato + '">'
+        + '<input type="hidden" data-field="cantidad" name="detalles[' + idx + '].cantidad" value="' + cantidad + '">'
         + '</td>'
-        + '<input type="hidden" name="listaDetalles[' + idx + '].plato.idPlato" value="' + idPlato + '">'
-        + '<input type="hidden" name="listaDetalles[' + idx + '].cantidad" value="' + cantidad + '">'
-        + '<input type="hidden" name="listaDetalles[' + idx + '].precioUnitario" value="' + precio + '">'
         + '</tr>';
 
     $('#tablaDetalle').append(fila);
@@ -197,8 +212,24 @@ function eliminarFila(idx){
     const subtotal = parseFloat(subtotalTexto);
     total -= subtotal;
     fila.remove();
+    reindexarDetalles();
     $('#totalGeneral').text(total.toFixed(2));
 }
+
+function reindexarDetalles(){
+    document.querySelectorAll('#tablaDetalle tr').forEach(function(fila, index){
+        fila.querySelectorAll('input[data-field]').forEach(function(input){
+            input.name = 'detalles[' + index + '].' + input.dataset.field;
+        });
+    });
+}
+
+document.getElementById('formPedido').addEventListener('submit', function(event){
+    if(document.querySelectorAll('#tablaDetalle tr').length === 0){
+        event.preventDefault();
+        alert('Agregue al menos un plato al pedido');
+    }
+});
 </script>
 
 </body>

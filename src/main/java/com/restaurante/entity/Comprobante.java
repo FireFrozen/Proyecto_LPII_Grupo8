@@ -2,6 +2,8 @@ package com.restaurante.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +22,7 @@ public class Comprobante {
     private String numero;
 
     @Column(name = "fecha_emision", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaEmision;
 
     @Column(name = "subtotal", nullable = false)
@@ -35,8 +38,12 @@ public class Comprobante {
     private String estadoComprobante;
 
     @OneToOne
-    @JoinColumn(name = "id_pedido")
+    @JoinColumn(name = "id_pedido", nullable = false)
     private Pedido pedido;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     public Comprobante() {
     }
@@ -111,6 +118,14 @@ public class Comprobante {
 
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

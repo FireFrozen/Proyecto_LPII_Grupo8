@@ -1,6 +1,5 @@
 package com.restaurante.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class Pedido {
     private String estadoPedido;
 
     @Column(name = "total", nullable = false)
-    private BigDecimal total;
+    private double total;
 
     @ManyToOne
     @JoinColumn(name = "id_mesa")
@@ -73,11 +72,11 @@ public class Pedido {
 		this.estadoPedido = estadoPedido;
 	}
 
-	public BigDecimal getTotal() {
+	public double getTotal() {
 		return total;
 	}
 
-	public void setTotal(BigDecimal total) {
+	public void setTotal(double total) {
 		this.total = total;
 	}
 
