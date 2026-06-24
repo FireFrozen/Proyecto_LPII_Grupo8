@@ -42,7 +42,7 @@ public class Pedido {
     @JsonIgnoreProperties({"listaPedidos"})
     private Usuario usuario;
     
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<DetallePedido> listaDetalles;
 
